@@ -1,0 +1,13 @@
+# Restful API
+* Current application was already running as Restful API service, so it makes sense to retain the existing Rest APIs.
+* Rest API is widely used architecture to expose APIs to public domain. This helps to expose our application to third party users in future. 
+* All the API's exposed by the application are based on Rest architecture.
+
+# gRPC
+* To reduce the latency in internal service communication gRPC protocol is used.
+* gRPC also helps in maintaining the dependencies required by each microservice to reduce breaking changes. It will be as good as calling a function inside the code.
+* All internal communication between microservices is done via gRPC.
+
+# Kafka
+* We expect the location of user to be updated frequently and that is why Kafka is used internally to call the Location service.
+* As more number of requests to update the location are made, Kafka efficently handles the incoming requests with queue to reduce load on the Location service.

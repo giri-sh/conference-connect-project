@@ -5,7 +5,6 @@ from typing import Dict, List
 import grpc
 import app.udaconnect.grpc_services.person_service_pb2
 import app.udaconnect.grpc_services.person_service_pb2_grpc
-from app.misc import log
 from google.protobuf.json_format import MessageToDict
 
 from app import db

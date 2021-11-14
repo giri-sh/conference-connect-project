@@ -1,4 +1,4 @@
-# conference-connect-project
+# Conference Connect Project
 
 
 ### Command to generate gRPC files

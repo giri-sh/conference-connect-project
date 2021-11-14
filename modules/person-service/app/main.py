@@ -21,21 +21,19 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
             "last_name": request.last_name,
             "company_name": request.company_name
         }
-        print(request_value)
+        logger.info(request_value)
         return person_service_pb2.PersonMessage(**request_value)
 
     def Get(self, request, context):
-        print(request.id)
         logger.info("Get person service")
         return person_service_pb2.PersonMessage(
-            id = "1",
+            id = 1,
             first_name = "G",
             last_name = "S",
             company_name = "Glob"
         )
 
     def GetAll(self, request, context):
-        print(request)
         logger.info("Get all person service")
         order_1 = person_service_pb2.PersonMessage(
             id = "1",

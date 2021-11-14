@@ -34,7 +34,7 @@ class PersonService:
 
     @staticmethod
     def retrieve(person_id: int):
-        logger.info("Getting details for person %s", person_id)
+        logger.info("Getting details for person %d", int(person_id))
         person_id_data = person_service_pb2.UniquePersonMessage(
             id = int(person_id)
         )

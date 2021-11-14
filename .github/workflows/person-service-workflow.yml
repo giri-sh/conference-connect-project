@@ -3,7 +3,7 @@ name: Person Service Workflow
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   docker:

@@ -51,6 +51,7 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
         )
         result = person_service_pb2.PersonMessageList()
         result.person_list.extend([order_1, order_2])
+        logger.info(result)
         return result
 
 

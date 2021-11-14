@@ -21,7 +21,7 @@ stub = person_service_pb2_grpc.PersonServiceStub(channel)
 
 class PersonService:
     @staticmethod
-    def create(person: Dict):
+    def create(person: Dict) -> Person:
         logger.info("Creating details for person %s", person.get("id"))
         person_message = person_service_pb2.PersonMessage(
             id = person.get("id"),
@@ -33,7 +33,7 @@ class PersonService:
         return response
 
     @staticmethod
-    def retrieve(person_id: int):
+    def retrieve(person_id: int) -> Person:
         logger.info("Getting details for person %d", int(person_id))
         person_id_data = person_service_pb2.UniquePersonMessage(
             id = int(person_id)

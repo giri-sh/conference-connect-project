@@ -1,4 +1,5 @@
 from datetime import datetime
+from kafka import KafkaConsumer, KafkaProducer
 
 from app.udaconnect.models import Connection, Location, Person
 from app.udaconnect.schemas import (
@@ -7,17 +8,33 @@ from app.udaconnect.schemas import (
     PersonSchema,
 )
 from app.udaconnect.services import ConnectionService, LocationService, PersonService
-from flask import request
-from flask_accepts import accepts, responds
-from flask_restx import Namespace, Resource
-from typing import Optional, List
 
-DATE_FORMAT = "%Y-%m-%d"
+TOPIC_NAME = 'items'
+KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
 
-api = Namespace("UdaConnect", description="Connections via geolocation.")  # noqa
+producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
+                        value_serializer=lambda x: dumps(x).encode('utf-8'),
+                        api_version=(0,10,1))
 
+consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,
+     auto_offset_reset='earliest',
+     enable_auto_commit=True,
+     group_id='my-group',
+     value_deserializer=lambda x: loads(x.decode('utf-8')),
+     api_version=(0,10,1))
 
-# TODO: This needs better exception handling
+locations = [] 
+for message in consumer:
+    data = message.value
+    tS = Timestamp()
+    person_id = data['person_id']
+    coordinate = data['coordinate']
+    creation_time = datetime.strptime(data['creation_time'], FORMAT)
+    connections = Connections.find_contacts(person_id, start_date, end_date)
+
+#     log(connections)
+#     data = {"foo---": f"{connections}" }
+    producer.send('con', value=f"{connections}")
 
 
 @api.route("/locations")

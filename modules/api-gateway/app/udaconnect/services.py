@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 import grpc
-import person_service_pb2
-import person_service_pb2_grpc
+import app.udaconnect.grpc_services.person_service_pb2
+import app.udaconnect.grpc_services.person_service_pb2_grpc
 from app.misc import log
 from google.protobuf.json_format import MessageToDict
 

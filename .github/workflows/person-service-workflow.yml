@@ -30,6 +30,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./modules/person-service
-          file: ./Dockerfile
+          file: ./modules/person-service/Dockerfile
           push: true
           tags: giri5h/conf-connect-person-service:latest

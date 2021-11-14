@@ -30,6 +30,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./modules/api-gateway
-          file: ./Dockerfile
+          file: ./modules/api-gateway/Dockerfile
           push: true
           tags: giri5h/conf-connect-api-gateway:latest

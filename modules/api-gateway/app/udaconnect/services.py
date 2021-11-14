@@ -34,13 +34,19 @@ class PersonService:
 
     @staticmethod
     def retrieve(person_id: int):
-        logger.info("Getting details for person %d", person_id)
-        return stub.Get(person_id)
+        logger.info("Getting details for person %s", person_id)
+        person_id_data = person_service_pb2.UniquePersonMessage(
+            id = int(person_id)
+        )
+        response = stub.Get(person_id_data)
+        return MessageToDict(response)
 
     @staticmethod
     def retrieve_all() -> List[Person]:
         logger.info("Getting all person details")
-        return stub.GetAll()
+        response = stub.GetAll(person_service_pb2.Empty())
+        logger.info(MessageToDict(response))
+        return MessageToDict(response)
 
 
 class ConnectionService:

@@ -1,4 +1,4 @@
-name: API Gateway Workflow
+name: Person Service Workflow
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./modules/api-gateway
+          context: ./modules/person-service
           file: ./Dockerfile
           push: true
-          tags: giri5h/conf-connect-api-gateway:latest
+          tags: giri5h/conf-connect-person-service:latest

@@ -5,11 +5,16 @@ import time
 import grpc
 import person_service_pb2
 import person_service_pb2_grpc
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("person-service")
 
 
 class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
 
     def Create(self, request, context):
+        logger.info("Create person service")
         request_value = {
             "id": int(request.id),
             "first_name": request.first_name,
@@ -20,6 +25,8 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
         return person_service_pb2.PersonMessage(**request_value)
 
     def Get(self, request, context):
+        print(request.id)
+        logger.info("Get person service")
         return person_service_pb2.PersonMessage(
             id = "1",
             first_name = "G",
@@ -28,6 +35,8 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
         )
 
     def GetAll(self, request, context):
+        print(request)
+        logger.info("Get all person service")
         order_1 = person_service_pb2.PersonMessage(
             id = "1",
             first_name = "G",

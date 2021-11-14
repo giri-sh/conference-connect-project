@@ -13,7 +13,7 @@ from app.udaconnect.schemas import ConnectionSchema, LocationSchema, PersonSchem
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("udaconnect-api")
 
 channel = grpc.insecure_channel("udaconnect-person-service:5001")
@@ -22,6 +22,7 @@ stub = person_service_pb2_grpc.PersonServiceStub(channel)
 class PersonService:
     @staticmethod
     def create(person: Dict):
+        logger.info("Creating details for person %s", person.get("id"))
         person_message = person_service_pb2.PersonMessage(
             id = person.get("id"),
             first_name = person.get("first_name"),
@@ -33,11 +34,13 @@ class PersonService:
 
     @staticmethod
     def retrieve(person_id: int):
+        logger.info("Getting details for person %d", person_id)
         return stub.Get(person_id)
 
     @staticmethod
     def retrieve_all() -> List[Person]:
-        return db.session.query(Person).all()
+        logger.info("Getting all person details")
+        return stub.GetAll()
 
 
 class ConnectionService:

@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    service: udaconnect-api
-  name: udaconnect-api
+    service: udaconnect-api-gateway
+  name: udaconnect-api-gateway
 spec:
   ports:
   - name: "5000"
@@ -11,59 +11,28 @@ spec:
     targetPort: 5000
     nodePort: 30001
   selector:
-    service: udaconnect-api
+    service: udaconnect-api-gateway
   type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    service: udaconnect-api
-  name: udaconnect-api
+    service: udaconnect-api-gateway
+  name: udaconnect-api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: udaconnect-api
+      service: udaconnect-api-gateway
   template:
     metadata:
       labels:
-        service: udaconnect-api
+        service: udaconnect-api-gateway
     spec:
       containers:
       - image: giri5h/conf-connect-api-gateway:latest
-        name: udaconnect-api
-        imagePullPolicy: Always
-        env:
-        - name: DB_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: db-env
-              key: DB_USERNAME
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: DB_PASSWORD
-        - name: DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: db-env
-              key: DB_NAME
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: db-env
-              key: DB_HOST
-        - name: DB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: db-env
-              key: DB_PORT
-      restartPolicy: Always
-
-      - image: giri5h/nd064-udaconnect-api:latest
-        name: udaconnect-api
+        name: udaconnect-api-gateway
         imagePullPolicy: Always
         env:
         - name: DB_USERNAME

@@ -2,8 +2,6 @@ name: Person Service Workflow
 
 on:
   push:
-    branches:
-      - 'main'
     paths:
       - 'modules/person-service/**'
 

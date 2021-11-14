@@ -2,8 +2,6 @@ name: API Gateway Workflow
 
 on:
   push:
-    branches:
-      - 'main'
     paths:
       - 'modules/api-gateway/**'
 

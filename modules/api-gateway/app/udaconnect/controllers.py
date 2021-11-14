@@ -43,9 +43,6 @@ class PersonResource(Resource):
 
 
 
-
-
-
 @api.route("/locations")
 @api.route("/locations/<location_id>")
 @api.param("location_id", "Unique ID for a given Location", _in="query")

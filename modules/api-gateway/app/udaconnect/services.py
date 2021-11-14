@@ -39,6 +39,7 @@ class PersonService:
             id = int(person_id)
         )
         response = stub.Get(person_id_data)
+        logger.info(MessageToDict(response))
         return MessageToDict(response)
 
     @staticmethod

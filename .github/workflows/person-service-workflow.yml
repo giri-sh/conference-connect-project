@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
     paths:
-      - 'modules/person-service'
+      - 'modules/person-service/**'
 
 jobs:
   docker:

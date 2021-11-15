@@ -1,4 +1,4 @@
-from models import Connection, Location, Person
+from models import Person
 from marshmallow import Schema, fields
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 

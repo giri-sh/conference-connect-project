@@ -1,4 +1,3 @@
 grpcio
 grpcio-tools
-libpq-dev
 psycopg2

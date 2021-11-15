@@ -11,7 +11,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("person-service")
 
-
 class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
 
     def Create(self, request, context):

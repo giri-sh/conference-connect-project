@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 

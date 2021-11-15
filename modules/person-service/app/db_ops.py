@@ -8,7 +8,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
-from geoalchemy2.functions import ST_AsText, ST_Point
 from typing import Dict
 
 logging.basicConfig(level=logging.INFO)

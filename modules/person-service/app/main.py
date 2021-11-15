@@ -5,6 +5,7 @@ import time
 import grpc
 import person_service_pb2
 import person_service_pb2_grpc
+import db_ops
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -33,6 +34,9 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
             company_name = "Glob"
         )
         logger.info(response)
+        db_data = db_ops.getPersonById(request.id)
+        logger.info(db_data)
+        logger.info(db_data[0])
         return response
 
     def GetAll(self, request, context):

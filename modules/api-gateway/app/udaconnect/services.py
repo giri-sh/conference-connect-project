@@ -39,15 +39,19 @@ class PersonService:
             id = int(person_id)
         )
         response = stub.Get(person_id_data)
-        logger.info(MessageToDict(response))
-        return MessageToDict(response)
+        logger.info(response)
+        data = MessageToDict(response)
+        logger.info(data)
+        return data
 
     @staticmethod
     def retrieve_all() -> List[Person]:
         logger.info("Getting all person details")
         response = stub.GetAll(person_service_pb2.Empty())
-        logger.info(MessageToDict(response))
-        return MessageToDict(response)
+        logger.info(response)
+        data = MessageToDict(response)
+        logger.info(data)
+        return data
 
 
 class ConnectionService:

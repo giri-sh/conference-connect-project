@@ -26,17 +26,14 @@ class PersonServicer(person_service_pb2_grpc.PersonServiceServicer):
 
     def Get(self, request, context):
         logger.info("Get person service")
-        response = person_service_pb2.PersonMessage(
-            id = 1,
-            first_name = "G",
-            last_name = "S",
-            company_name = "Glob"
+        db_data = db_ops.getPersonById(request.id)[0]
+        person = person_service_pb2.PersonMessage(
+            id = db_data[0],
+            first_name = db_data[1],
+            last_name = db_data[2],
+            company_name = db_data[3]
         )
-        logger.info(response)
-        db_data = db_ops.getPersonById(request.id)
-        logger.info(db_data)
-        logger.info(db_data[0])
-        return response
+        return person
 
     def GetAll(self, request, context):
         logger.info("Get all person service")

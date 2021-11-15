@@ -40,7 +40,7 @@ class PersonService:
         )
         response = stub.Get(person_id_data)
         logger.info(response)
-        data = MessageToDict(response)
+        data = MessageToDict(message=response, preserving_proto_field_name=True)
         logger.info(data)
         return data
 
@@ -49,7 +49,7 @@ class PersonService:
         logger.info("Getting all person details")
         response = stub.GetAll(person_service_pb2.Empty())
         logger.info(response)
-        data = MessageToDict(response)
+        data = MessageToDict(message=response, preserving_proto_field_name=True).get('person_list')
         logger.info(data)
         return data
 

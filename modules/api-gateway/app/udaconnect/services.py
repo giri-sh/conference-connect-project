@@ -127,7 +127,7 @@ class ConnectionService:
 
 
 TOPIC_NAME = 'locations'
-KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
+KAFKA_SERVER = '10.0.2.15:9092'
 
 producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
                         value_serializer=lambda x: dumps(x).encode('utf-8'),

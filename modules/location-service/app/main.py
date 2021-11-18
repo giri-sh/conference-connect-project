@@ -27,8 +27,8 @@ locations = []
 for message in consumer:
     data = message.value
     request_value = {
-        "id": data['id'],
-        "person_id": data['person_id'],
+        "id": int(data['id']),
+        "person_id": int(data['person_id']),
         "coordinate": data['coordinate'],
         "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
     }

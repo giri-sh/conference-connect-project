@@ -12,12 +12,13 @@ from app.udaconnect.models import Connection, Location, Person
 from app.udaconnect.schemas import ConnectionSchema, LocationSchema, PersonSchema
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
+from kafka import KafkaProducer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("udaconnect-api")
 
-channel = grpc.insecure_channel("udaconnect-person-service:5001")
-stub = person_service_pb2_grpc.PersonServiceStub(channel)
+ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
+ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
 
 class PersonService:
     @staticmethod
@@ -29,8 +30,10 @@ class PersonService:
             last_name = person.get("last_name"),
             company_name = person.get("company_name")
         )
-        response = stub.Create(person_message)
-        return response
+        response = ps_stub.Create(person_message)
+        data = MessageToDict(message=response, preserving_proto_field_name=True)
+        logger.info(data)
+        return data
 
     @staticmethod
     def retrieve(person_id: int) -> Person:
@@ -38,7 +41,7 @@ class PersonService:
         person_id_data = person_service_pb2.UniquePersonMessage(
             id = int(person_id)
         )
-        response = stub.Get(person_id_data)
+        response = ps_stub.Get(person_id_data)
         logger.info(response)
         data = MessageToDict(message=response, preserving_proto_field_name=True)
         logger.info(data)
@@ -47,7 +50,7 @@ class PersonService:
     @staticmethod
     def retrieve_all() -> List[Person]:
         logger.info("Getting all person details")
-        response = stub.GetAll(person_service_pb2.Empty())
+        response = ps_stub.GetAll(person_service_pb2.Empty())
         logger.info(response)
         data = MessageToDict(message=response, preserving_proto_field_name=True).get('person_list')
         logger.info(data)
@@ -123,6 +126,14 @@ class ConnectionService:
         return result
 
 
+TOPIC_NAME = 'locations'
+KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
+
+producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
+                        value_serializer=lambda x: dumps(x).encode('utf-8'),
+                        api_version=(0,10,1))
+    
+
 class LocationService:
     @staticmethod
     def retrieve(location_id) -> Location:
@@ -142,13 +153,10 @@ class LocationService:
         if validation_results:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
-
         new_location = Location()
         new_location.person_id = location["person_id"]
         new_location.creation_time = location["creation_time"]
         new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        db.session.add(new_location)
-        db.session.commit()
-
+        producer.send('location', value=f"{new_location}")
         return new_location
 

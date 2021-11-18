@@ -23,7 +23,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def _db_connect():
-    logger.info("Connecting to Database...")
     db_conn = psycopg2.connect(
         dbname=DB_NAME,
         user=DB_USERNAME,
@@ -34,34 +33,35 @@ def _db_connect():
     logger.info("Connnected to Database")
     return db_conn
 
-def getPersonById(id: int):
+def get_person_by_id(id: int):
     conn = _db_connect()
     cursor = conn.cursor()
-    if(id):
-        sql = f"SELECT * FROM person WHERE id={int(id)}"
-    else:
-        sql = f"SELECT * FROM person"
+    sql = f"SELECT * FROM person WHERE id={int(id)}"
     cursor.execute(sql)
     data = cursor.fetchall()
     conn.commit()
     cursor.close()
     conn.close()
+    logger.info("Retrieved data for get person by id")
     return data
 
-# def save_to_db(location):
+def get_all_person_list():
+    conn = _db_connect()
+    cursor = conn.cursor()
+    sql = f"SELECT * FROM person"
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    logger.info("Retrieved data for get all person list")
+    return data
 
-#     log("SAVING LOCATION:")
-
-#     validation_results: Dict = LocationSchema().validate(location)
-#     if validation_results:
-#         log(f"Unexpected data format in payload: {validation_results}")
-#         raise Exception(f"Invalid payload: {validation_results}")
-
-#     new_location = Location()
-#     new_location.person_id = location["person_id"]
-#     new_location.creation_time = location["creation_time"]
-#     new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-#     session.add(new_location)
-#     session.commit()
-
-#     return new_location
+def save_person_data(person):
+    new_person = Person()
+    new_person.id = person["id"]
+    new_person.first_name = person["first_name"]
+    new_person.last_name = person["last_name"]
+    new_person.company_name = person["company_name"]
+    session.add(new_person)
+    session.commit()

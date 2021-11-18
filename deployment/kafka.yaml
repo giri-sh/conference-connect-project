@@ -1,0 +1,69 @@
+# Zookeeper config
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-zookeeper
+  labels:
+    app: kafka-zookeeper
+spec:
+  ports:
+  - name: client
+    port: 2181
+    protocol: TCP
+  - name: follower
+    port: 2888
+    protocol: TCP
+  - name: leader
+    port: 3888
+    protocol: TCP
+  selector:
+    app: kafka-zookeeper
+---
+kind: Deployment
+apiVersion: v1
+metadata:
+  name: kafka-zookeeper-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka-zookeeper
+    spec:
+      containers:
+      - name: kafka-zookeeper
+        image: bitnami/zookeeper
+        ports:
+        - containerPort: 2181
+        resources:
+          limits:
+            cpu: 512m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: ZOOKEEPER_ID
+          value: "1"
+        - name: ZOOKEEPER_SERVER_1
+          value: kafka-zookeeper
+
+---
+# Kafka service
+apiVersion: v1 
+kind: Service
+metadata:  
+  labels:  
+    app: kafkaApp 
+  name: kafka
+spec:  
+  ports:  
+    -  
+      port: 9092 
+      targetPort: 9092
+      protocol: TCP
+    -  
+      port: 2181 
+      targetPort: 2181 
+  selector:  
+    app: kafkaApp 
+  type: LoadBalancer

@@ -6,6 +6,7 @@ import db_ops
 from models import Location
 from schemas import (
     LocationSchema,
+)
 
 from flask_sqlalchemy import SQLAlchemy
 

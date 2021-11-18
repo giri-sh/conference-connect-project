@@ -6,7 +6,9 @@ metadata:
   name: kafka
   labels:
     app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-14.4.1
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: kafka
 automountServiceAccountToken: true
 ---
@@ -17,16 +19,20 @@ metadata:
   name: kafka-scripts
   labels:
     app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-14.4.1
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
 data:
   setup.sh: |-
     #!/bin/bash
+
     ID="${MY_POD_NAME#"kafka-"}"
     if [[ -f "/bitnami/kafka/data/meta.properties" ]]; then
         export KAFKA_CFG_BROKER_ID="$(grep "broker.id" /bitnami/kafka/data/meta.properties | awk -F '=' '{print $2}')"
     else
         export KAFKA_CFG_BROKER_ID="$((ID + 0))"
     fi
+
     exec /entrypoint.sh /run.sh
 ---
 # Source: kafka/charts/zookeeper/templates/svc-headless.yaml
@@ -37,7 +43,9 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: zookeeper
+    helm.sh/chart: zookeeper-7.4.10
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: zookeeper
 spec:
   type: ClusterIP
@@ -69,7 +77,9 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: zookeeper
+    helm.sh/chart: zookeeper-7.4.10
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: zookeeper
 spec:
   type: ClusterIP
@@ -99,7 +109,9 @@ metadata:
   name: kafka-headless
   labels:
     app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-14.4.1
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: kafka
 spec:
   type: ClusterIP
@@ -125,7 +137,9 @@ metadata:
   name: kafka
   labels:
     app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-14.4.1
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: kafka
 spec:
   type: ClusterIP
@@ -148,7 +162,9 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: zookeeper
+    helm.sh/chart: zookeeper-7.4.10
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: zookeeper
     role: zookeeper
 spec:
@@ -167,7 +183,9 @@ spec:
       name: kafka-zookeeper
       labels:
         app.kubernetes.io/name: zookeeper
+        helm.sh/chart: zookeeper-7.4.10
         app.kubernetes.io/instance: kafka
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: zookeeper
     spec:
       
@@ -193,8 +211,8 @@ spec:
           
       initContainers:
         - name: volume-permissions
-          image: docker.io/bitnami/bitnami-shell:10-debian-10-r172
-          imagePullPolicy: "Always"
+          image: docker.io/bitnami/bitnami-shell:10-debian-10-r233
+          imagePullPolicy: "IfNotPresent"
           command:
             - chown
           args:
@@ -208,7 +226,7 @@ spec:
               mountPath: /bitnami/zookeeper
       containers:
         - name: zookeeper
-          image: docker.io/bitnami/zookeeper:3.7.0-debian-10-r127
+          image: docker.io/bitnami/zookeeper:3.7.0-debian-10-r188
           imagePullPolicy: "IfNotPresent"
           securityContext:
             runAsUser: 1001
@@ -270,7 +288,7 @@ spec:
             - name: ZOO_ENABLE_AUTH
               value: "no"
             - name: ZOO_HEAP_SIZE
-              value: "1024"
+              value: "1024"                  
             - name: ZOO_LOG_LEVEL
               value: "ERROR"
             - name: ALLOW_ANONYMOUS_LOGIN
@@ -305,7 +323,7 @@ spec:
             failureThreshold: 6
           volumeMounts:
             - name: data
-              mountPath: /bitnami/zookeeper
+              mountPath: /bitnami/zookeeper              
       volumes:
   volumeClaimTemplates:
     - metadata:
@@ -325,7 +343,9 @@ metadata:
   name: kafka
   labels:
     app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-14.4.1
     app.kubernetes.io/instance: kafka
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: kafka
 spec:
   podManagementPolicy: Parallel
@@ -342,7 +362,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: kafka
+        helm.sh/chart: kafka-14.4.1
         app.kubernetes.io/instance: kafka
+        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: kafka
     spec:
       
@@ -369,8 +391,8 @@ spec:
       serviceAccountName: kafka
       initContainers:
         - name: volume-permissions
-          image: docker.io/bitnami/bitnami-shell:10-debian-10-r199
-          imagePullPolicy: "Always"
+          image: docker.io/bitnami/bitnami-shell:10-debian-10-r234
+          imagePullPolicy: "IfNotPresent"
           command:
             - /bin/bash
           args:
@@ -390,7 +412,7 @@ spec:
               mountPath: /opt/bitnami/kafka/logs
       containers:
         - name: kafka
-          image: docker.io/bitnami/kafka:2.8.1-debian-10-r0
+          image: docker.io/bitnami/kafka:2.8.1-debian-10-r31
           imagePullPolicy: "IfNotPresent"
           command:
             - /scripts/setup.sh
@@ -467,6 +489,12 @@ spec:
               value: "102400"
             - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
               value: "6000"
+            - name: KAFKA_CFG_AUTHORIZER_CLASS_NAME
+              value: ""
+            - name: KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND
+              value: "true"
+            - name: KAFKA_CFG_SUPER_USERS
+              value: "User:admin"
           ports:
             - name: kafka-client
               containerPort: 9092

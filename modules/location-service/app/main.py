@@ -1,5 +1,6 @@
 from datetime import datetime
 from kafka import KafkaConsumer
+from json import loads
 
 import db_ops
 

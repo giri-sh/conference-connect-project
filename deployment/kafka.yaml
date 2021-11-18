@@ -1,7 +1,7 @@
 # Zookeeper config
 
 kind: StatefulSet
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: zookeeper-deployment-1
 spec:
@@ -62,7 +62,7 @@ spec:
 
 ---
 kind: StatefulSet
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: kafka-deployment-1
 spec:

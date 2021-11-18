@@ -1,0 +1,96 @@
+swagger: '2.0'
+basePath: /
+paths:
+  /api/locations:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_location_resource
+      tags:
+        - LocationService
+  '/api/locations/{location_id}':
+    parameters:
+      - in: path
+        description: Unique ID for a given Location
+        name: location_id
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_location_resource
+      tags:
+        - LocationService
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_location_resource
+      tags:
+        - LocationService
+  /api/persons:
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_person_resource
+      tags:
+        - PersonService
+    post:
+      responses:
+        '200':
+          description: Success
+      operationId: post_person_resource
+      tags:
+        - PersonService
+  '/api/persons/{person_id}':
+    parameters:
+      - in: path
+        description: Unique ID of Person
+        name: person_id
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_person_resource
+      tags:
+        - PersonService
+  '/api/persons/{person_id}/connection':
+    parameters:
+      - in: query
+        description: Connections of person by location
+        name: distance
+        type: string
+      - in: query
+        description: Upper bound of date range
+        name: end_date
+        type: string
+      - in: query
+        description: Lower bound of date range
+        name: start_date
+        type: string
+      - name: person_id
+        in: path
+        required: true
+        type: string
+    get:
+      responses:
+        '200':
+          description: Success
+      operationId: get_connection_data_resource
+      tags:
+        - ConnectionService
+info:
+  title: UdaConnect API
+  version: 0.0.1
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: UdaConnect
+    description: Connections via geolocation.

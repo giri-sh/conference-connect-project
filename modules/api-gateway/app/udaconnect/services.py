@@ -150,6 +150,7 @@ class LocationService:
 
     @staticmethod
     def create(location: Dict) -> Location:
+        logger.info(location)
         validation_results: Dict = LocationSchema().validate(location)
         if validation_results:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
@@ -158,6 +159,7 @@ class LocationService:
         new_location.person_id = location["person_id"]
         new_location.creation_time = location["creation_time"]
         new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        producer.send('location', value=f"{new_location}")
+        logger.info(new_location)
+        producer.send(TOPIC_NAME, value=f"{new_location}")
         return new_location
 

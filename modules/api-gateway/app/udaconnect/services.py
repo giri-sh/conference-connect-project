@@ -21,7 +21,7 @@ logger = logging.getLogger("udaconnect-api")
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
 
-TOPIC_NAME = 'locations'
+TOPIC_NAME = 'location_topic'
 KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
 
 producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,

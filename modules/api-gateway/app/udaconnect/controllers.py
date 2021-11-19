@@ -44,35 +44,30 @@ class PersonResource(Resource):
         return person
 
 
-# @api.route("/locations")
-# class LocationResourcePost(Resource):
-#     @accepts(schema=LocationSchema)
-#     @responds(schema=LocationSchema)
-#     def post(self) -> Location:
-#         logger.debug("Calling Location controller in debug mode")
-#         logger.info("Calling Location controller")
-#         logger.info(request)
-#         json_data = request.get_json()
-#         logger.info(json_data)
-#         location: Location = LocationService.create(json_data)
-#         return location
-
-
 @api.route("/locations")
-@api.route("/locations/<location_id>")
-@api.param("location_id", "Unique ID for a given Location", _in="query")
-class LocationResource(Resource):
+class LocationResourcePost(Resource):
     @accepts(schema=LocationSchema)
     @responds(schema=LocationSchema)
     def post(self) -> Location:
-        logger.debug("Post Location controller in debug mode")
-        logger.info("Post Location controller")
+        logger.debug("Calling Location controller in debug mode")
+        logger.info("Calling Location controller")
         logger.info(request)
         json_data = request.get_json()
         logger.info(json_data)
         location: Location = LocationService.create(json_data)
         return location
 
+    @responds(schema=LocationSchema)
+    def get(self, location_id) -> Location:
+        logger.debug("Get Location controller in debug mode")
+        logger.info("Get Location controller")
+        location: Location = LocationService.retrieve(location_id)
+        return location
+
+
+@api.route("/locations/<location_id>")
+@api.param("location_id", "Unique ID for a given Location", _in="query")
+class LocationResource(Resource):
     @responds(schema=LocationSchema)
     def get(self, location_id) -> Location:
         logger.debug("Get Location controller in debug mode")

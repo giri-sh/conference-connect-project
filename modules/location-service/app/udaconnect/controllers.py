@@ -1,12 +1,12 @@
 from datetime import datetime
 import logging
 
-from app.udaconnect.models import Connection, Location, Person
+from app.udaconnect.models import Location
 from app.udaconnect.schemas import (
     LocationSchema,
 )
 from app.udaconnect.services import LocationService
-from flask import Flask, jsonify, request, g, Response
+from flask import request, g, Response
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import Optional, List
@@ -14,10 +14,7 @@ from typing import Optional, List
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("loc-service-api")
 
-DATE_FORMAT = "%Y-%m-%d"
-
 api = Namespace("loc_service_api", description="Connections via geolocation.")
-
 
 @api.route("/locations")
 class LocationResourcePost(Resource):
@@ -44,7 +41,6 @@ class LocationResourcePost(Resource):
 class LocationResource(Resource):
     @responds(schema=LocationSchema)
     def get(self, location_id) -> Location:
-        logger.debug("Get Location controller in debug mode")
         logger.info("Get Location controller")
         location: Location = LocationService.retrieve(location_id)
         return location

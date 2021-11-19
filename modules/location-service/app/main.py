@@ -15,10 +15,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("location-service")
 
-TOPIC_NAME = 'location_topic'
+TOPIC_NAME = 'location_topic1'
 KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
 
 consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,

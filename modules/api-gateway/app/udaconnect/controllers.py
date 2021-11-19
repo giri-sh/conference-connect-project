@@ -12,8 +12,6 @@ from flask import Flask, jsonify, request, g, Response
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import Optional, List
-from json import dumps
-from kafka import KafkaProducer
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
@@ -21,17 +19,6 @@ logger = logging.getLogger("udaconnect-api")
 DATE_FORMAT = "%Y-%m-%d"
 
 api = Namespace("UdaConnect", description="Connections via geolocation.")
-
-
-@api.before_request
-def before_request():
-    # Set up a Kafka producer
-    KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
-    producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-                        value_serializer=lambda x: dumps(x).encode('utf-8'),
-                        api_version=(0,10,1))
-    g.kafka_producer = producer
-
 
 @api.route("/persons")
 class PersonsResource(Resource):

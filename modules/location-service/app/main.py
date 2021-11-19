@@ -34,15 +34,13 @@ for message in consumer:
     logger.info("Create location service")
     data = message.value
     logger.info(data)
-    data_map = loads(data)
+    data_map = loads(data.replace("'",'"'))
     logger.info(data_map)
-    logger.info(data[1])
-    logger.info(data)
     request_value = {
-        "id": int(data_map['id']),
-        "person_id": int(data_map['person_id']),
-        "coordinate": data_map['coordinate'],
-        "creation_time": datetime.strptime(data_map['creation_time'], "%Y-%m-%d")
+        "id": int(data['id']),
+        "person_id": int(data['person_id']),
+        "coordinate": data['coordinate'],
+        "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
     }
     logger.info(request_value)
     db_ops.save_location_data(request_value)

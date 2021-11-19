@@ -29,24 +29,20 @@ consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,
      api_version=(0,10,1))
 
 location_map: Dict[str, Location] = []
-for message in consumer: 
-    location = message.value
-    location_map = loads(location.replace("'",'"'))
-    logger.info(location_map)
-    break
 
 for message in consumer:
     logger.info("Create location service")
     data = message.value
     logger.info(data)
-    data_map = loads(location.replace("'",'"'))
+    data_map = loads(data)
     logger.info(data_map)
     logger.info(data[1])
+    logger.info(data)
     request_value = {
-        "id": int(data['id']),
-        "person_id": int(data['person_id']),
-        "coordinate": data['coordinate'],
-        "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
+        "id": int(data_map['id']),
+        "person_id": int(data_map['person_id']),
+        "coordinate": data_map['coordinate'],
+        "creation_time": datetime.strptime(data_map['creation_time'], "%Y-%m-%d")
     }
     logger.info(request_value)
     db_ops.save_location_data(request_value)

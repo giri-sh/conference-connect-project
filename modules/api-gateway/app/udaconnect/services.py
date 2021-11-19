@@ -163,7 +163,7 @@ class LocationService:
         location_data = {
             "id": location["id"],
             "person_id": str(location["person_id"]),
-            "creation_time": location["creation_time"].strftime("%Y-%m-%d"),
+            "creation_time": location["creation_time"],
             "coordinate": str(ST_Point(location["latitude"], location["longitude"]))
         }
         producer.send(TOPIC_NAME,value=f"{location_data}")

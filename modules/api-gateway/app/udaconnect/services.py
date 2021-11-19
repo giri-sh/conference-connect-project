@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
-from .controllers import g
+from app.udaconnect.controllers import g
 # from json import dumps
 
 import grpc

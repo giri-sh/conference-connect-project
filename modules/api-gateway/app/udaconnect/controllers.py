@@ -13,7 +13,7 @@ from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import Optional, List
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api-controller")
 
 DATE_FORMAT = "%Y-%m-%d"

@@ -33,19 +33,12 @@ location_map: Dict[str, Location] = []
 for message in consumer:
     logger.info("Create location service")
     data = message.value
-    logger.info(message)
-    logger.info(data)
-    # request_value = {
-    #     "id": data[0],
-    #     "person_id": data[1],
-    #     "coordinate": data[2],
-    #     "creation_time": datetime.strptime(data[3], "%Y-%m-%d")
-    # }
-    # request_value = {
-    #     "id": int(data['id']),
-    #     "person_id": int(data['person_id']),
-    #     "coordinate": data['coordinate'],
-    #     "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
-    # }
-    # logger.info(request_value)
-    # db_ops.save_location_data(request_value)
+    request_value = {
+        "id": int(data['id']),
+        "person_id": int(data['person_id']),
+        "coordinate": data['coordinate'],
+        "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
+    }
+    logger.info(request_value)
+    db_ops.save_location_data(request_value)
+    

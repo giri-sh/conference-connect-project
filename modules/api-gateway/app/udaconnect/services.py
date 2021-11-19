@@ -15,7 +15,7 @@ from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 from kafka import KafkaProducer
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
 
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
@@ -154,12 +154,6 @@ class LocationService:
         if validation_results:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
-        new_location = Location()
-        new_location.id = location["id"]
-        new_location.person_id = location["person_id"]
-        new_location.creation_time = location["creation_time"]
-        new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        logger.info(new_location)
         location_data = {
             "id": location["id"],
             "person_id": str(location["person_id"]),
@@ -168,6 +162,10 @@ class LocationService:
         }
         producer.send(TOPIC_NAME,value=f"{location_data}")
         producer.flush()
-        # producer.send(TOPIC_NAME, value=f"{new_location}")
-        return location_data
+        new_location = Location()
+        new_location.id = location["id"]
+        new_location.person_id = location["person_id"]
+        new_location.creation_time = location["creation_time"]
+        new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
+        return new_location
 

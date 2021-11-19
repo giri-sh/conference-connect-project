@@ -6,7 +6,6 @@ from json import dumps
 from app import db
 from app.udaconnect.models import Location, Person
 from app.udaconnect.schemas import LocationSchema
-import db_ops
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 from flask import g
@@ -48,6 +47,7 @@ class LocationService:
             new_location.person_id = data["person_id"]
             new_location.creation_time = data["creation_time"]
             new_location.coordinate = ST_Point(data["latitude"], location["longitude"])
-            db_ops.save_location_data(new_location)
+            db.session.add(new_location)
+            db.session.commit()
         return new_location
 

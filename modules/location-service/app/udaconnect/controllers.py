@@ -26,8 +26,7 @@ class LocationResourcePost(Resource):
         json_data = request.get_json()
         logger.info(json_data)
         location: Location = LocationService.create(json_data)
-        response = Response(status="Success")
-        return response
+        return Response(status="Success")
 
     @responds(schema=LocationSchema)
     def get(self) -> Location:

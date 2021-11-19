@@ -135,6 +135,7 @@ class LocationService:
     def retrieve(location_id) -> Location:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
+            logger.info(response.json())
         else:
             response = requests.get(f"{location_service_url}")
             logger.info(response.json())

@@ -8,7 +8,7 @@ spec:
   ports:
   - name: "5002"
     port: 5002
-    targetPort: 5002
+    targetPort: 5000
     nodePort: 30003
   selector:
     service: udaconnect-location-service

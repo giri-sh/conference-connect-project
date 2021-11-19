@@ -6,7 +6,7 @@ metadata:
   name: udaconnect-connection-service
 spec:
   ports:
-  - name: "5001"
+  - name: "5003"
     port: 5003
     targetPort: 5003
     nodePort: 30004

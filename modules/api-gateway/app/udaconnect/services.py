@@ -21,6 +21,13 @@ logger = logging.getLogger("udaconnect-api")
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
 
+TOPIC_NAME = 'locations'
+KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
+
+producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
+                        value_serializer=lambda x: dumps(x).encode('utf-8'),
+                        api_version=(0,10,1))
+
 class PersonService:
     @staticmethod
     def create(person: Dict) -> Person:
@@ -125,14 +132,6 @@ class ConnectionService:
                 )
 
         return result
-
-
-TOPIC_NAME = 'locations'
-KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
-
-producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-                        value_serializer=lambda x: dumps(x).encode('utf-8'),
-                        api_version=(0,10,1))
     
 
 class LocationService:

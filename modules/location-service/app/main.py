@@ -28,15 +28,15 @@ consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,
      api_version=(0,10,1))
 
 for message in consumer:
-    data = message.value
     logger.info("Create location service")
+    logger.info(message)
+    data = message.value
     logger.info(data)
-    logger.info(message.value)
-
     request_value = {
         "id": int(data[0]),
         "person_id": int(data[1]),
         "coordinate": data[2],
         "creation_time": datetime.strptime(data[3], "%Y-%m-%d")
     }
+    logger.info(request_value)
     db_ops.save_location_data(request_value)

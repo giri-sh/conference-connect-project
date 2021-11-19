@@ -28,8 +28,6 @@ consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,
                          value_deserializer=lambda x: loads(x.decode('utf-8')),
                          api_version=(0, 10, 1))
 
-location_map: Dict[str, Location] = []
-
 for message in consumer:
     logger.info("Create location service")
     data = message.value

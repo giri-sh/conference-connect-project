@@ -1,7 +1,8 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
-from json import dumps
+from .controllers import g
+# from json import dumps
 
 import grpc
 import app.udaconnect.grpc_services.person_service_pb2 as person_service_pb2
@@ -13,7 +14,7 @@ from app.udaconnect.models import Connection, Location, Person
 from app.udaconnect.schemas import ConnectionSchema, LocationSchema, PersonSchema
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
-from kafka import KafkaProducer
+# from kafka import KafkaProducer
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
@@ -22,11 +23,11 @@ ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
 
 TOPIC_NAME = 'location_topic'
-KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
+# KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
 
-producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-                        value_serializer=lambda x: dumps(x).encode('utf-8'),
-                        api_version=(0,10,1))
+# producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
+#                         value_serializer=lambda x: dumps(x).encode('utf-8'),
+#                         api_version=(0,10,1))
 
 class PersonService:
     @staticmethod
@@ -160,7 +161,9 @@ class LocationService:
             "creation_time": location["creation_time"],
             "coordinate": str(ST_Point(location["latitude"], location["longitude"]))
         }
-        producer.send(TOPIC_NAME,value=f"{location_data}")
+        # kafka_data = json.dumps(order_data).encode()
+        producer = g.kafka_producer
+        producer.send(TOPIC_NAME, f"{location_data}")
         producer.flush()
         new_location = Location()
         new_location.id = location["id"]

@@ -8,17 +8,29 @@ from app.udaconnect.schemas import (
     PersonSchema,
 )
 from app.udaconnect.services import ConnectionService, LocationService, PersonService
-from flask import request
+from flask import Flask, jsonify, request, g, Response
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import Optional, List
+from json import dumps
+from kafka import KafkaProducer
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("udaconnect-api-controller")
+logger = logging.getLogger("udaconnect-api")
 
 DATE_FORMAT = "%Y-%m-%d"
 
 api = Namespace("UdaConnect", description="Connections via geolocation.")
+
+
+@api.before_request
+def before_request():
+    # Set up a Kafka producer
+    KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
+    producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
+                        value_serializer=lambda x: dumps(x).encode('utf-8'),
+                        api_version=(0,10,1))
+    g.kafka_producer = producer
 
 
 @api.route("/persons")
@@ -45,6 +57,20 @@ class PersonResource(Resource):
         return person
 
 
+# @api.route("/locations")
+# class LocationResourcePost(Resource):
+#     @accepts(schema=LocationSchema)
+#     @responds(schema=LocationSchema)
+#     def post(self) -> Location:
+#         logger.debug("Calling Location controller in debug mode")
+#         logger.info("Calling Location controller")
+#         logger.info(request)
+#         json_data = request.get_json()
+#         logger.info(json_data)
+#         location: Location = LocationService.create(json_data)
+#         return location
+
+
 @api.route("/locations")
 @api.route("/locations/<location_id>")
 @api.param("location_id", "Unique ID for a given Location", _in="query")
@@ -52,7 +78,8 @@ class LocationResource(Resource):
     @accepts(schema=LocationSchema)
     @responds(schema=LocationSchema)
     def post(self) -> Location:
-        logger.info("Calling Location controller")
+        logger.debug("Post Location controller in debug mode")
+        logger.info("Post Location controller")
         logger.info(request)
         json_data = request.get_json()
         logger.info(json_data)
@@ -61,6 +88,8 @@ class LocationResource(Resource):
 
     @responds(schema=LocationSchema)
     def get(self, location_id) -> Location:
+        logger.debug("Get Location controller in debug mode")
+        logger.info("Get Location controller")
         location: Location = LocationService.retrieve(location_id)
         return location
 

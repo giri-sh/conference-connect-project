@@ -1,9 +1,10 @@
 from datetime import datetime
 from kafka import KafkaConsumer
 from json import loads
-import logging
+from typing import Dict
 
 import db_ops
+import logging
 
 from models import Location
 from schemas import (
@@ -27,19 +28,25 @@ consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER,
      value_deserializer=lambda x: loads(x.decode('utf-8')),
      api_version=(0,10,1))
 
+location_map: Dict[str, Location] = []
+for message in consumer: 
+    location = message.value
+    location_map = loads(location.replace("'",'"'))
+    logger.info(location_map)
+    break
+
 for message in consumer:
     logger.info("Create location service")
     data = message.value
     logger.info(data)
-    logger.info(data["person_id"])
-    logger.info(data['id'])
-    new_data = f"{data}"
-    logger.info(new_data)
+    data_map = loads(location.replace("'",'"'))
+    logger.info(data_map)
+    logger.info(data[1])
     request_value = {
         "id": int(data['id']),
-        "person_id": int(data["person_id"]),
-        "coordinate": data[2],
-        "creation_time": datetime.strptime(data[3], "%Y-%m-%d")
+        "person_id": int(data['person_id']),
+        "coordinate": data['coordinate'],
+        "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
     }
     logger.info(request_value)
     db_ops.save_location_data(request_value)

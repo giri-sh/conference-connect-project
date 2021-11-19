@@ -48,20 +48,18 @@ class PersonResource(Resource):
 class LocationResourcePost(Resource):
     @accepts(schema=LocationSchema)
     @responds(schema=LocationSchema)
-    def post(self) -> Location:
-        logger.debug("Calling Location controller in debug mode")
-        logger.info("Calling Location controller")
-        logger.info(request)
+    def post(self) :
+        logger.info("Post Location controller")
         json_data = request.get_json()
         logger.info(json_data)
         location: Location = LocationService.create(json_data)
-        return location
+        response = Response(status="Success")
+        return response
 
     @responds(schema=LocationSchema)
-    def get(self, location_id) -> Location:
-        logger.debug("Get Location controller in debug mode")
+    def get(self) -> Location:
         logger.info("Get Location controller")
-        location: Location = LocationService.retrieve(location_id)
+        location: Location = LocationService.retrieve()
         return location
 
 
@@ -70,7 +68,6 @@ class LocationResourcePost(Resource):
 class LocationResource(Resource):
     @responds(schema=LocationSchema)
     def get(self, location_id) -> Location:
-        logger.debug("Get Location controller in debug mode")
         logger.info("Get Location controller")
         location: Location = LocationService.retrieve(location_id)
         return location

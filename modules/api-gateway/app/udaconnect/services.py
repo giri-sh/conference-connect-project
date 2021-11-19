@@ -1,4 +1,5 @@
 import logging
+import requests
 from datetime import datetime, timedelta
 from typing import Dict, List
 from json import dumps
@@ -21,12 +22,7 @@ logger = logging.getLogger("udaconnect-api")
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
 
-
-# KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
-
-# producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-#                         value_serializer=lambda x: dumps(x).encode('utf-8'),
-#                         api_version=(0,10,1))
+location_service_url = "http://udaconnect-location-service:5002/api/locations"
 
 class PersonService:
     @staticmethod
@@ -137,41 +133,24 @@ class ConnectionService:
 class LocationService:
     @staticmethod
     def retrieve(location_id) -> Location:
-        location, coord_text = (
-            db.session.query(Location, Location.coordinate.ST_AsText())
-            .filter(Location.id == location_id)
-            .one()
-        )
-
-        # Rely on database to return text form of point to reduce overhead of conversion in app code
-        location.wkt_shape = coord_text
-        return location
+        if location_id:
+            response = requests.get(f"{location_service_url}/{location_id}")
+        else:
+            response = requests.get(f"{location_service_url}")
+            logger.info(response.json())
+        if(response.status_code == 200):
+            new_location = response.json()
+            return new_location 
+        else:
+            return {"error": response.status_code}
 
     @staticmethod
     def create(location: Dict) -> Location:
         logger.info(location)
-        validation_results: Dict = LocationSchema().validate(location)
-        if validation_results:
-            logger.warning(f"Unexpected data format in payload: {validation_results}")
-            raise Exception(f"Invalid payload: {validation_results}")
-        location_data = {
-            "id": location["id"],
-            "person_id": str(location["person_id"]),
-            "creation_time": location["creation_time"],
-            "coordinate": str(ST_Point(location["latitude"], location["longitude"]))
-        }
-        # kafka_data = json.dumps(order_data).encode()
-        TOPIC_NAME = 'location_topic1'
-        KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
-        producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER,
-                            value_serializer=lambda x: dumps(x).encode('utf-8'),
-                            api_version=(0,10,1))
-        producer.send(TOPIC_NAME, f"{location_data}")
-        producer.flush()
-        new_location = Location()
-        new_location.id = location["id"]
-        new_location.person_id = location["person_id"]
-        new_location.creation_time = location["creation_time"]
-        new_location.coordinate = ST_Point(location["latitude"], location["longitude"])
-        return new_location
-
+        response = requests.post(f"{location_service_url}", json=location)
+        logger.info(response.json())
+        if(response.status_code == 200):
+            new_location = response.json()
+            return new_location 
+        else:
+            return {"error": response.status_code}

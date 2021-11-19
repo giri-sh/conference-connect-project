@@ -22,17 +22,6 @@ engine = create_engine(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# def _db_connect():
-#     db_conn = psycopg2.connect(
-#         dbname=DB_NAME,
-#         user=DB_USERNAME,
-#         password=DB_PASSWORD,
-#         host=DB_HOST,
-#         port=DB_PORT
-#     )
-#     logger.info("Connnected to Database")
-#     return db_conn
-
 def save_location_data(location):
     new_location = Location()
     new_location.id = int(location["id"])

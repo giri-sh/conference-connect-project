@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 EXPOSE 5002
 
 COPY . .
-CMD ["python", "./app/main.py"]
+CMD ["flask", "run", "--host", "0.0.0.0"]

@@ -166,7 +166,8 @@ class LocationService:
             "creation_time": location["creation_time"].strftime("%Y-%m-%d"),
             "coordinate": str(ST_Point(location["latitude"], location["longitude"]))
         }
-        producer.send(TOPIC_NAME,value=location_data)
+        producer.send(TOPIC_NAME,value=f"{location_data}")
+        producer.flush()
         # producer.send(TOPIC_NAME, value=f"{new_location}")
         return location_data
 

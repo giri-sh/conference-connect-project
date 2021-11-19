@@ -34,8 +34,6 @@ for message in consumer:
     logger.info("Create location service")
     data = message.value
     logger.info(data)
-    data_map = loads(data.replace("'",'"'))
-    logger.info(data_map)
     request_value = {
         "id": int(data['id']),
         "person_id": int(data['person_id']),

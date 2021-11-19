@@ -36,11 +36,17 @@ def consume_message():
         data = message.value
         logger.info(data)
         request_value = {
-            "id": int(data['id']),
-            "person_id": int(data['person_id']),
-            "coordinate": data['coordinate'],
-            "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
+            "id": int(data[0]),
+            "person_id": int(data[1]),
+            "coordinate": data[2],
+            "creation_time": datetime.strptime(data[3], "%Y-%m-%d")
         }
+        # request_value = {
+        #     "id": int(data['id']),
+        #     "person_id": int(data['person_id']),
+        #     "coordinate": data['coordinate'],
+        #     "creation_time": datetime.strptime(data['creation_time'], "%Y-%m-%d")
+        # }
         logger.info(request_value)
         db_ops.save_location_data(request_value)
 

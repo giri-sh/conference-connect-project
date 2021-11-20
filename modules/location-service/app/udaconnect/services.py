@@ -42,23 +42,25 @@ class LocationService:
         producer = g.kafka_producer
         producer.send(TOPIC_NAME, location)
         producer.flush()
+
+        consumer = g.kafka_consumer
+        tp = TopicPartition(TOPIC_NAME,0)
+        consumer.assign([tp])
+        lastOffset = consumer.position(tp)
+        consumer.seek_to_beginning(tp)
+
+        for message in consumer:
+            data = message.value
+            new_location = Location()
+            new_location.id = data["id"]
+            new_location.person_id = data["person_id"]
+            new_location.creation_time = data["creation_time"]
+            new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
+            db.session.add(new_location)
+            db.session.commit()
+            if message.offset == lastOffset - 1:
+                break
         return location
 
 
-consumer = g.kafka_consumer
-tp = TopicPartition(TOPIC_NAME,0)
-consumer.assign([tp])
-lastOffset = consumer.position(tp)
-consumer.seek_to_beginning(tp)
 
-for message in consumer:
-    data = message.value
-    new_location = Location()
-    new_location.id = data["id"]
-    new_location.person_id = data["person_id"]
-    new_location.creation_time = data["creation_time"]
-    new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
-    db.session.add(new_location)
-    db.session.commit()
-    if message.offset == lastOffset - 1:
-        break

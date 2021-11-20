@@ -136,16 +136,20 @@ class LocationService:
     def retrieve(location_id) -> Location:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
-            logger.info(response)
             logger.info(response.json())
         else:
             response = requests.get(f"{location_service_url}")
-            logger.info(response)
             logger.info(response.json())
         if(response.status_code == 200):
-            location_data = json.loads(str(response.json()).replace("'", '"'), object_hook=lambda d: Location(**d))
+            location_data = response.json()
             logger.info(location_data)
-            return location_data
+            new_location = Location()
+            new_location.id = location_data['id']
+            new_location.person_id = location_data['person_id']
+            new_location.creation_time = location_data['creation_time']
+            new_location.latitude = location_data['latitude']
+            new_location.longitude = location_data['longitude']
+            return new_location
         else:
             return {"error": response.status_code}
 
@@ -155,7 +159,6 @@ class LocationService:
         response = requests.post(f"{location_service_url}", json=location)
         logger.info(response.json())
         if(response.status_code == 200):
-            new_location = response.json()
-            return new_location 
+            return location
         else:
             return {"error": response.status_code}

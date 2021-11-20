@@ -2,7 +2,7 @@ import logging
 import requests
 from datetime import datetime, timedelta
 from typing import Dict, List
-from json import dumps
+from json import json, dumps
 
 import grpc
 import app.udaconnect.grpc_services.person_service_pb2 as person_service_pb2
@@ -136,12 +136,13 @@ class LocationService:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
             logger.info(response.json())
+            location_data = json.loads(response.json(), object_hook=lambda d: Location(**d))
+            logger.info(location_data)
         else:
             response = requests.get(f"{location_service_url}")
             logger.info(response.json())
         if(response.status_code == 200):
-            new_location = response.json()
-            return new_location 
+            return response.json()
         else:
             return {"error": response.status_code}
 

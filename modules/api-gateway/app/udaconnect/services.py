@@ -22,6 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
 
 tS = Timestamp()
+DATE_FORMAT = "%Y-%m-%d"
 
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
@@ -150,7 +151,7 @@ class LocationService:
             new_location = Location()
             new_location.id = location_data['id']
             new_location.person_id = location_data['person_id']
-            new_location.creation_time = tS.FromDatetime(location_data['creation_time'])
+            new_location.creation_time = datetime.strptime(location_data['creation_time'], DATE_FORMAT)
             new_location.set_wkt_with_coords(location_data['latitude'], location_data['longitude'])
             logger.info(new_location)
             return new_location

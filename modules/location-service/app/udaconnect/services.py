@@ -9,11 +9,13 @@ from app.udaconnect.schemas import LocationSchema
 from geoalchemy2.functions import ST_AsText, ST_Point
 from sqlalchemy.sql import text
 from flask import g
+from kafka import TopicPartition, KafkaProducer, KafkaConsumer
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("loc-service-api")
 
 TOPIC_NAME = 'locations'
+
 
 class LocationService:
     @staticmethod
@@ -33,21 +35,30 @@ class LocationService:
         logger.info(location)
         validation_results: Dict = LocationSchema().validate(location)
         if validation_results:
-            logger.warning(f"Unexpected data format in payload: {validation_results}")
+            logger.warning(
+                f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
         # Kafka Operationn
         producer = g.kafka_producer
         producer.send(TOPIC_NAME, location)
-        consumer = g.kafka_consumer
-        
-        for message in consumer:
-            data = message.value
-            new_location = Location()
-            new_location.id = data["id"]
-            new_location.person_id = data["person_id"]
-            new_location.creation_time = data["creation_time"]
-            new_location.coordinate = ST_Point(data["latitude"], location["longitude"])
-            db.session.add(new_location)
-            db.session.commit()
-        return new_location
+        producer.flush()
+        return location
 
+
+consumer = g.kafka_consumer
+tp = TopicPartition(TOPIC_NAME,0)
+consumer.assign([tp])
+lastOffset = consumer.position(tp)
+consumer.seek_to_beginning(tp)
+
+for message in consumer:
+    data = message.value
+    new_location = Location()
+    new_location.id = data["id"]
+    new_location.person_id = data["person_id"]
+    new_location.creation_time = data["creation_time"]
+    new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
+    db.session.add(new_location)
+    db.session.commit()
+    if message.offset == lastOffset - 1:
+        break

@@ -56,12 +56,6 @@ class LocationResourcePost(Resource):
         response = Response(status="Success")
         return response
 
-    @responds(schema=LocationSchema)
-    def get(self) -> Location:
-        logger.info("Get Location controller")
-        location: Location = LocationService.retrieve()
-        return location
-
 
 @api.route("/locations/<location_id>")
 @api.param("location_id", "Unique ID for a given Location", _in="query")

@@ -137,7 +137,7 @@ class LocationService:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
             logger.info(response.json())
-            location_data = json.loads(response.json(), object_hook=lambda d: Location(**d))
+            location_data = json.loads(response, object_hook=lambda d: Location(**d))
             logger.info(location_data)
         else:
             response = requests.get(f"{location_service_url}")

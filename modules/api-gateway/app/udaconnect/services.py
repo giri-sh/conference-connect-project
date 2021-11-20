@@ -147,8 +147,7 @@ class LocationService:
             new_location.id = location_data['id']
             new_location.person_id = location_data['person_id']
             new_location.creation_time = location_data['creation_time']
-            new_location.latitude = location_data['latitude']
-            new_location.longitude = location_data['longitude']
+            new_location.coordinate = ST_Point(location_data['latitude'], location_data['longitude'])
             return new_location
         else:
             return {"error": response.status_code}

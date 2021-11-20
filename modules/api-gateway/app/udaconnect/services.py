@@ -136,14 +136,16 @@ class LocationService:
     def retrieve(location_id) -> Location:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
+            logger.info(response)
             logger.info(response.json())
-            location_data = json.loads(response, object_hook=lambda d: Location(**d))
-            logger.info(location_data)
+            # location_data = json.loads(response, object_hook=lambda d: Location(**d))
+            # logger.info(location_data)
         else:
             response = requests.get(f"{location_service_url}")
+            logger.info(response)
             logger.info(response.json())
         if(response.status_code == 200):
-            return response.json()
+            return response
         else:
             return {"error": response.status_code}
 

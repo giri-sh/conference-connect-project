@@ -8,6 +8,7 @@ from json import dumps
 import grpc
 import app.udaconnect.grpc_services.person_service_pb2 as person_service_pb2
 import app.udaconnect.grpc_services.person_service_pb2_grpc as person_service_pb2_grpc
+from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.json_format import MessageToDict
 
 from app import db
@@ -19,6 +20,8 @@ from kafka import KafkaProducer
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
+
+tS = Timestamp()
 
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)
@@ -142,12 +145,14 @@ class LocationService:
             logger.info(response.json())
         if(response.status_code == 200):
             location_data = response.json()
+            logger.info("Sending response")
             logger.info(location_data)
             new_location = Location()
             new_location.id = location_data['id']
             new_location.person_id = location_data['person_id']
-            new_location.creation_time = location_data['creation_time']
+            new_location.creation_time = tS.FromDatetime(location_data['creation_time'])
             new_location.set_wkt_with_coords(location_data['latitude'], location_data['longitude'])
+            logger.info(new_location)
             return new_location
         else:
             return {"error": response.status_code}

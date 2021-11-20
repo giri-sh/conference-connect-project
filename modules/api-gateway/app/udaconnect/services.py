@@ -133,7 +133,7 @@ class ConnectionService:
 
 class LocationService:
     @staticmethod
-    def retrieve(location_id):
+    def retrieve(location_id) -> Location:
         if location_id:
             response = requests.get(f"{location_service_url}/{location_id}")
             logger.info(response.json())
@@ -143,13 +143,12 @@ class LocationService:
         if(response.status_code == 200):
             location_data = response.json()
             logger.info(location_data)
-            return location_data
-            # new_location = Location()
-            # new_location.id = location_data['id']
-            # new_location.person_id = location_data['person_id']
-            # new_location.creation_time = location_data['creation_time']
-            # new_location.coordinate = ST_Point(location_data['latitude'], location_data['longitude'])
-            # return new_location
+            new_location = Location()
+            new_location.id = location_data['id']
+            new_location.person_id = location_data['person_id']
+            new_location.creation_time = location_data['creation_time']
+            new_location.set_wkt_with_coords(location_data['latitude'], location_data['longitude'])
+            return new_location
         else:
             return {"error": response.status_code}
 

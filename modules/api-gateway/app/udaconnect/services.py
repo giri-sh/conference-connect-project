@@ -143,7 +143,7 @@ class LocationService:
             logger.info(response)
             logger.info(response.json())
         if(response.status_code == 200):
-            location_data = json.loads(str(response.json()), object_hook=lambda d: Location(**d))
+            location_data = json.loads(str(response.json()).replace("'", '"'), object_hook=lambda d: Location(**d))
             logger.info(location_data)
             return location_data
         else:

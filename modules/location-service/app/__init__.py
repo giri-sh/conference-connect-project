@@ -25,7 +25,12 @@ def create_app(env=None):
         TOPIC_NAME = 'locations'
         KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
         producer = KafkaProducer(bootstrap_servers = KAFKA_SERVER, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        consumer = KafkaConsumer(bootstrap_servers = KAFKA_SERVER, value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+        consumer = KafkaConsumer(
+            bootstrap_servers = KAFKA_SERVER, 
+            auto_offset_reset='earliest',
+            enable_auto_commit=True,
+            group_id='kafka-group',
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         g.kafka_producer = producer
         g.kafka_consumer = consumer
 

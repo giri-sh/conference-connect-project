@@ -28,7 +28,6 @@ def create_app(env=None):
         consumer = KafkaConsumer(
             bootstrap_servers = KAFKA_SERVER, 
             auto_offset_reset='earliest',
-            enable_auto_commit=True,
             group_id='kafka-group',
             value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         g.kafka_producer = producer

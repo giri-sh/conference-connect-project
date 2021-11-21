@@ -75,7 +75,24 @@ class ConnectionService:
         response = requests.get(url=f"{connection_service_url}/{person_id}/connection", params=payload)
         if(response.status_code == 200):
             logger.info(response.json())
-            return response.json()
+            connections = []
+            for data in response.json():
+                connections_data = Connection()
+                person = Person()
+                person.id = data['person']['id']
+                person.first_name = data['person']['first_name']
+                person.last_name = data['person']['last_name']
+                person.company_name = data['person']['company_name']
+                connections_data.person = person
+                new_location = Location()
+                new_location.id = data['location']['id']
+                new_location.person_id = data['location']['person_id']
+                new_location.creation_time = datetime.strptime(data['location']['creation_time'], DATE_FORMAT)
+                new_location.set_wkt_with_coords(data['location']['latitude'], data['location']['longitude'])
+                connections_data.location = new_location
+                connections.append(connections_data)
+            logger.info(connections)
+            return connections
         else:
             return {"error": response.status_code}
     

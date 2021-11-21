@@ -52,12 +52,14 @@ class LocationService:
 
         for message in consumer:
             logger.info("Calling consumer to consume the message")
-            decoded_msg = json.loads(message.decode('utf-8'))
-            logger.info(decoded_msg)
+            logger.info(message)
             data = message.value
             logger.info(data)
-            decoded_data = json.loads(data.decode('utf-8'))
-            logger.info(decoded_data)
+            try:
+                decoded_data = json.loads(data.decode('utf-8'))
+                logger.info(decoded_data)
+            except BaseException as e:
+                logger.info("Failed parsing data")
             new_location = Location()
             new_location.person_id = data["person_id"]
             new_location.creation_time = data["creation_time"]

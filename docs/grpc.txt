@@ -1,8 +1,14 @@
+gRPC Functions created -
+
 // Create person and add into database
-Create()
+- Create()
 
 // Get person from the database by id
-Get()
+- Get()
 
 // Get all person data from database
-GetAll()
+- GetAll()
+
+Steps to run -
+- ssh into the person service which is grpc based
+- run `python app/getter.py` to run the grpc service that is stubbed

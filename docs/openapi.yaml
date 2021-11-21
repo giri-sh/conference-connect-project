@@ -85,7 +85,7 @@ paths:
       tags:
         - ConnectionService
 info:
-  title: UdaConnect API
+  title: Conference Connect API
   version: 0.0.1
 produces:
   - application/json

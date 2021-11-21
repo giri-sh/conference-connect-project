@@ -55,10 +55,8 @@ class LocationService:
             logger.info(message)
             data = message.value
             logger.info(data)
-            logger.info(data[0])
-            logger.info(data[1])
-            logger.info(data[2])
-            logger.info(data[3])
+            logger.info(data['person_id'])
+            logger.info(data['creation_time'])
             # new_location = Location()
             # new_location.person_id = data["person_id"]
             # new_location.creation_time = data["creation_time"]

@@ -14,7 +14,7 @@ from kafka import TopicPartition, KafkaProducer, KafkaConsumer
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("loc-service-api")
 
-TOPIC_NAME = 'locations'
+TOPIC_NAME = 'location_topics'
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
@@ -45,10 +45,10 @@ class LocationService:
         producer.flush()
         logger.info("Produced a message to topic")
         consumer = g.kafka_consumer
-        tp = TopicPartition(TOPIC_NAME,0)
-        consumer.assign([tp])
-        lastOffset = consumer.position(tp)
-        consumer.seek_to_beginning(tp)
+        # tp = TopicPartition(TOPIC_NAME,0)
+        # consumer.assign([tp])
+        # lastOffset = consumer.position(tp)
+        # consumer.seek_to_beginning(tp)
 
         for message in consumer:
             logger.info("Calling consumer to consume the message")
@@ -68,8 +68,8 @@ class LocationService:
             # new_location.coordinate = ST_Point(data['latitude'], data['longitude'])
             # db.session.add(new_location)
             # db.session.commit()
-            if message.offset == lastOffset - 1:
-                break
+            # if message.offset == lastOffset - 1:
+            #     break
         return location
 
 

@@ -48,7 +48,7 @@ class LocationService:
         tp = TopicPartition(TOPIC_NAME,0)
         consumer.assign([tp])
         lastOffset = consumer.position(tp)
-        # consumer.seek_to_beginning(tp)
+        consumer.seek_to_beginning(tp)
 
         for message in consumer:
             logger.info("Calling consumer to consume the message")

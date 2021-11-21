@@ -14,7 +14,7 @@ from kafka import TopicPartition, KafkaProducer, KafkaConsumer
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("loc-service-api")
 
-TOPIC_NAME = 'location_topics1'
+TOPIC_NAME = 'location_topics'
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
@@ -58,11 +58,11 @@ class LocationService:
             # logger.info(data['person_id'])
             # logger.info(data['creation_time'])
             # new_location = Location()
-            # new_location.person_id = data["person_id"]
-            # new_location.creation_time = data["creation_time"]
-            # new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
-            # db.session.add(new_location)
-            # db.session.commit()
+            new_location.person_id = data["person_id"]
+            new_location.creation_time = data["creation_time"]
+            new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
+            db.session.add(new_location)
+            db.session.commit()
             # new_location.person_id = int(data['person_id'])
             # new_location.creation_time = datetime.strptime(data['creation_time'], DATE_FORMAT)
             # new_location.coordinate = ST_Point(data['latitude'], data['longitude'])

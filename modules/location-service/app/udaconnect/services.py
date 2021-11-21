@@ -14,7 +14,7 @@ from kafka import TopicPartition, KafkaProducer, KafkaConsumer
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("loc-service-api")
 
-TOPIC_NAME = 'location_topics'
+TOPIC_NAME = 'location_topics1'
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 
@@ -39,7 +39,7 @@ class LocationService:
             logger.warning(
                 f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
-        # Kafka Operationn
+        # Kafka Operation
         producer = g.kafka_producer
         producer.send(TOPIC_NAME, location)
         producer.flush()

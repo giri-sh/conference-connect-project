@@ -55,17 +55,16 @@ class LocationService:
             logger.info(message)
             data = message.value
             logger.info(data)
-            try:
-                decoded_data = json.loads(data.decode('utf-8'))
-                logger.info(decoded_data)
-            except BaseException as e:
-                logger.info("Failed parsing data")
-            new_location = Location()
-            new_location.person_id = data["person_id"]
-            new_location.creation_time = data["creation_time"]
-            new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
-            db.session.add(new_location)
-            db.session.commit()
+            logger.info(data[0])
+            logger.info(data[1])
+            logger.info(data[2])
+            logger.info(data[3])
+            # new_location = Location()
+            # new_location.person_id = data["person_id"]
+            # new_location.creation_time = data["creation_time"]
+            # new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
+            # db.session.add(new_location)
+            # db.session.commit()
             # new_location.person_id = int(data['person_id'])
             # new_location.creation_time = datetime.strptime(data['creation_time'], DATE_FORMAT)
             # new_location.coordinate = ST_Point(data['latitude'], data['longitude'])

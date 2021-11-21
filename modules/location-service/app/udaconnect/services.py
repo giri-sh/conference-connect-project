@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
-from json import dumps
+import json
 
 from app import db
 from app.udaconnect.models import Location, Person
@@ -52,8 +52,12 @@ class LocationService:
 
         for message in consumer:
             logger.info("Calling consumer to consume the message")
+            decoded_msg = json.loads(message.decode('utf-8'))
+            logger.info(decoded_msg)
             data = message.value
             logger.info(data)
+            decoded_data = json.loads(data.decode('utf-8'))
+            logger.info(decoded_data)
             new_location = Location()
             new_location.person_id = data["person_id"]
             new_location.creation_time = data["creation_time"]

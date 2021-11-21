@@ -77,7 +77,7 @@ class ConnectionDataResource(Resource):
     def get(self, person_id) -> ConnectionSchema:
         start_date = request.args["start_date"]
         end_date = request.args["end_date"]
-        distance = request.args.get("distance", 5)
+        distance: Optional[int] = request.args.get("distance", 5)
 
         results = ConnectionService.find_contacts(
             person_id=person_id,

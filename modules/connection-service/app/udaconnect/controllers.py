@@ -12,6 +12,10 @@ from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
 from typing import Optional, List
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("udaconnect-api")
+
 DATE_FORMAT = "%Y-%m-%d"
 
 api = Namespace("connection_api", description="Connections via geolocation.")
@@ -24,6 +28,10 @@ api = Namespace("connection_api", description="Connections via geolocation.")
 class ConnectionDataResource(Resource):
     @responds(schema=ConnectionSchema, many=True)
     def get(self, person_id) -> ConnectionSchema:
+        logger.info("Connection Service controller")
+        logger.info(request.args["start_date"])
+        logger.info(request.args["end_date"])
+        logger.info(request.args["distance"])
         start_date: datetime = datetime.strptime(
             request.args["start_date"], DATE_FORMAT
         )

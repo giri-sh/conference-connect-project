@@ -73,8 +73,11 @@ class ConnectionService:
     ) -> List[Connection]:
         payload = {'start_date': start_date, 'end_date': end_date, 'distance': meters}
         response = requests.get(url=f"{connection_service_url}/{person_id}/connection", params=payload)
-        logger.info(response.json())
-        return response
+        if(response.status_code == 200):
+            logger.info(response.json())
+            return response.json()
+        else:
+            return {"error": response.status_code}
     
 
 class LocationService:

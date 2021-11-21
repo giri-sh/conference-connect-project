@@ -71,7 +71,7 @@ class ConnectionService:
     @staticmethod
     def find_contacts(person_id: int, start_date: str, end_date: str, meters=5
     ) -> List[Connection]:
-        payload = {'start_date': start_date, 'end_date': end_date, 'meters': meters}
+        payload = {'start_date': start_date, 'end_date': end_date, 'distance': meters}
         response = requests.get(url=f"{connection_service_url}/{person_id}/connection", params=payload)
         logger.info(response.json())
         return response

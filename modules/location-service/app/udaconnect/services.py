@@ -52,7 +52,6 @@ class LocationService:
         for message in consumer:
             data = message.value
             new_location = Location()
-            new_location.id = data["id"]
             new_location.person_id = data["person_id"]
             new_location.creation_time = data["creation_time"]
             new_location.coordinate = ST_Point(data["latitude"], data["longitude"])

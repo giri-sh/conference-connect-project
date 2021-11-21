@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("udaconnect-api")
 
 tS = Timestamp()
-DATE_FORMAT = "%Y-%m-%d"
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
 ps_channel = grpc.insecure_channel("udaconnect-person-service:5001")
 ps_stub = person_service_pb2_grpc.PersonServiceStub(ps_channel)

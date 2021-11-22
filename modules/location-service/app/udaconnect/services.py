@@ -34,16 +34,6 @@ class LocationService:
     @staticmethod
     def create(location: Dict) -> Location:
         logger.info(location)
-        validation_results: Dict = LocationSchema().validate(location)
-        if validation_results:
-            logger.warning(
-                f"Unexpected data format in payload: {validation_results}")
-            raise Exception(f"Invalid payload: {validation_results}")
-        # Kafka Operation
-        producer = g.kafka_producer
-        producer.send(TOPIC_NAME, location)
-        producer.flush()
-        logger.info("Produced a message to topic")
         consumer = g.kafka_consumer
         tp = TopicPartition(TOPIC_NAME,0)
         consumer.assign([tp])
@@ -55,19 +45,11 @@ class LocationService:
             new_location = Location()
             data = message.value
             logger.info(data)
-            # logger.info(data['person_id'])
-            # logger.info(data['creation_time'])
-            # new_location = Location()
             new_location.person_id = data["person_id"]
             new_location.creation_time = data["creation_time"]
             new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
             db.session.add(new_location)
             db.session.commit()
-            # new_location.person_id = int(data['person_id'])
-            # new_location.creation_time = datetime.strptime(data['creation_time'], DATE_FORMAT)
-            # new_location.coordinate = ST_Point(data['latitude'], data['longitude'])
-            # db.session.add(new_location)
-            # db.session.commit()
             if message.offset == lastOffset - 1:
                 break
         return location

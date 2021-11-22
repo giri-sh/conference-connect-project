@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timedelta
 from typing import Dict, List
 from json import dumps
+from flask import g
 
 import grpc
 import app.udaconnect.grpc_services.person_service_pb2 as person_service_pb2
@@ -121,6 +122,16 @@ class LocationService:
     @staticmethod
     def create(location: Dict) -> Location:
         logger.info(location)
+        validation_results: Dict = LocationSchema().validate(location)
+        if validation_results:
+            logger.warning(f"Unexpected data format in payload: {validation_results}")
+            raise Exception(f"Invalid payload: {validation_results}")
+        # Kafka Operation
+        TOPIC_NAME = 'location_topics'
+        producer = g.kafka_producer
+        producer.send(TOPIC_NAME, location)
+        producer.flush()
+        logger.info("Produced a message to topic")
         response = requests.post(f"{location_service_url}", json=location)
         logger.info(response.json())
         if(response.status_code == 200):

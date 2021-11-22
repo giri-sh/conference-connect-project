@@ -127,14 +127,15 @@ class LocationService:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
         # Kafka Operation
-        TOPIC_NAME = 'loc_topic'
+        TOPIC_NAME = 'location_topics'
         producer = g.kafka_producer
         producer.send(TOPIC_NAME, location)
         producer.flush()
         logger.info("Produced a message to topic")
-        response = requests.post(f"{location_service_url}", json=location)
-        logger.info(response.json())
-        if(response.status_code == 200):
-            return location
-        else:
-            return {"error": response.status_code}
+        return location
+        # response = requests.post(f"{location_service_url}", json=location)
+        # logger.info(response.json())
+        # if(response.status_code == 200):
+        #     return location
+        # else:
+        #     return {"error": response.status_code}

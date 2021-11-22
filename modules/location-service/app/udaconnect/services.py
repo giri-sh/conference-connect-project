@@ -31,28 +31,26 @@ class LocationService:
         location.wkt_shape = coord_text
         return location
 
-    @staticmethod
-    def create(location: Dict) -> Location:
-        logger.info("Calling consumer to consume the message")
-        logger.info(location)
-        consumer = g.kafka_consumer
-        tp = TopicPartition(TOPIC_NAME,0)
-        consumer.assign([tp])
-        lastOffset = consumer.position(tp)
-        consumer.seek_to_beginning(tp)
-
-        for message in consumer:
-            new_location = Location()
-            data = message.value
-            logger.info(data)
-            new_location.person_id = data["person_id"]
-            new_location.creation_time = data["creation_time"]
-            new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
-            db.session.add(new_location)
-            db.session.commit()
-            if message.offset == lastOffset - 1:
-                break
-        return location
+    # @staticmethod
+    # def create(location: Dict) -> Location:
+    #     return location
 
 
+logger.info("Calling consumer to consume the message")
+consumer = g.kafka_consumer
+tp = TopicPartition(TOPIC_NAME, 0)
+consumer.assign([tp])
+lastOffset = consumer.position(tp)
+consumer.seek_to_beginning(tp)
 
+for message in consumer:
+    new_location = Location()
+    data = message.value
+    logger.info(data)
+    new_location.person_id = data["person_id"]
+    new_location.creation_time = data["creation_time"]
+    new_location.coordinate = ST_Point(data["latitude"], data["longitude"])
+    db.session.add(new_location)
+    db.session.commit()
+    if message.offset == lastOffset - 1:
+        break

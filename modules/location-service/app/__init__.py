@@ -43,6 +43,9 @@ def create_app(env=None):
     consumer.seek_to_beginning(tp)
 
     for message in consumer:
+        logger.info(message)
+        if message.offset == 0:
+            continue
         new_location = Location()
         data = message.value
         logger.info(data)

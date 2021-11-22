@@ -7,7 +7,7 @@
 * [Vagrant](https://www.vagrantup.com/) - Tool for managing virtual deployed environments
 * [VirtualBox](https://www.virtualbox.org/) - Hypervisor allowing you to run multiple operating systems
 * [K3s](https://k3s.io/) - Lightweight distribution of K8s to easily develop against a local cluster
-* [Apatche-Kafka](https://kafka.apache.org/) - Open-source distributed message streaming platform.
+* [Kafka](https://kafka.apache.org/) - Open-source distributed message streaming platform.
 * [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) - Popular Architecture to create APIs
 * [grpc](https://grpc.io/) - Remote procedure calls to enable faster queries over http2.
 

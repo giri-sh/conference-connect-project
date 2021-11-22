@@ -127,7 +127,7 @@ class LocationService:
             logger.warning(f"Unexpected data format in payload: {validation_results}")
             raise Exception(f"Invalid payload: {validation_results}")
         # Kafka Operation
-        TOPIC_NAME = 'location_topics'
+        TOPIC_NAME = 'location_topic'
         producer = g.kafka_producer
         producer.send(TOPIC_NAME, location)
         producer.flush()

@@ -26,6 +26,7 @@ def create_app(env=None):
 
     register_routes(api, app)
     db.init_app(app)
+    app.app_context().push()
 
     KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
     # producer = KafkaProducer(bootstrap_servers = KAFKA_SERVER, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
@@ -34,7 +35,7 @@ def create_app(env=None):
     # g.kafka_producer = producer
     # g.kafka_consumer = consumer
     # consumer = g.kafka_consumer
-    TOPIC_NAME = 'location_topics'
+    TOPIC_NAME = 'location_topic'
     logger.info("Calling consumer to consume the message")
     tp = TopicPartition(TOPIC_NAME, 0)
     consumer.assign([tp])

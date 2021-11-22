@@ -4,6 +4,7 @@ from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 from kafka import KafkaProducer, KafkaConsumer
 import json
+from app.udaconnect.services import kafka_consumer_ops
 
 db = SQLAlchemy()
 
@@ -27,6 +28,8 @@ def create_app(env=None):
         consumer = KafkaConsumer(bootstrap_servers = KAFKA_SERVER, value_deserializer=lambda m: json.loads(m.decode('utf-8')))
         g.kafka_producer = producer
         g.kafka_consumer = consumer
+
+    kafka_consumer_ops()
 
     @app.route("/health")
     def health():

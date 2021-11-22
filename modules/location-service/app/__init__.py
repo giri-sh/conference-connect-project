@@ -39,7 +39,6 @@ def create_app(env=None):
         consumer.assign([tp])
         lastOffset = consumer.position(tp)
         consumer.seek_to_beginning(tp)
-        consumer.poll()
 
         for message in consumer:
             new_location = Location()

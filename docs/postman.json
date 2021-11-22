@@ -53,12 +53,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:30003/api/locations",
+					"raw": "http://localhost:30001/api/locations",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "30003",
+					"port": "30001",
 					"path": [
 						"api",
 						"locations"

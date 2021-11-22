@@ -33,6 +33,7 @@ class LocationService:
 
     @staticmethod
     def create(location: Dict) -> Location:
+        logger.info("Calling consumer to consume the message")
         logger.info(location)
         consumer = g.kafka_consumer
         tp = TopicPartition(TOPIC_NAME,0)
@@ -41,7 +42,6 @@ class LocationService:
         consumer.seek_to_beginning(tp)
 
         for message in consumer:
-            logger.info("Calling consumer to consume the message")
             new_location = Location()
             data = message.value
             logger.info(data)

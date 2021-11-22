@@ -14,5 +14,6 @@
 * With Kafka implementation below decisions were taken -
 ** API Gateway service publishes location related messages to a topic.
 ** Location service consumes the published location message to save it to database. 
-The code for consumer is written in __init__ file to make sure that the service starts the kafka consumer on startup and continuously listens to any message that is published to the topic.
-Location service also has a get function that is part of restful service called by API gateway service to get location data.
+**The code for consumer is written in __init__ file to make sure that the service starts the kafka consumer on startup and continuously listens to any message that is published to the topic.
+** Location service also has a get function that is part of restful service called by API gateway service to get location data. So Kafka consumer has been added in the same restful service.
+** With this design, Location service will also cater for any future enhancements that will arise for the service.

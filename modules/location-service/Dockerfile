@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 
 COPY . .
-CMD ["python", "./udaconnect/main.py"]
+CMD ["python", "./app/udaconnect/main.py"]

@@ -29,22 +29,23 @@ tp = TopicPartition(TOPIC_NAME, 0)
 consumer.assign([tp])
 lastOffset = consumer.position(tp)
 consumer.seek_to_beginning(tp)
-consumer.poll(10)
+# consumer.poll(10)
 
-for message in consumer:
-    logger.info(message)
-    if message.offset == 0:
-        continue
-    new_location = Location()
-    data = message.value
-    logger.info(data)
-    new_location.person_id = data["person_id"]
-    new_location.creation_time = data["creation_time"]
-    new_location.coordinate = ST_Point(
-        data["latitude"], data["longitude"])
-    db_ops.save_location_data(new_location)
-    if message.offset == lastOffset - 1:
-        break
+while True:
+    for message in consumer:
+        logger.info(message)
+        if message.offset == 0:
+            continue
+        new_location = Location()
+        data = message.value
+        logger.info(data)
+        new_location.person_id = data["person_id"]
+        new_location.creation_time = data["creation_time"]
+        new_location.coordinate = ST_Point(
+            data["latitude"], data["longitude"])
+        db_ops.save_location_data(new_location)
+        if message.offset == lastOffset - 1:
+            break
 
 
 # TOPIC_NAME = 'location_topic'

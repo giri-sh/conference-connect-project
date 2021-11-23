@@ -23,10 +23,10 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def save_location_data(location):
-    new_location = Location()
-    new_location.id = int(location["id"])
-    new_location.person_id = int(location["person_id"])
-    new_location.coordinate = location["coordinate"]
-    new_location.creation_time = location["creation_time"]
-    session.add(new_location)
+    # new_location = Location()
+    # new_location.id = int(location["id"])
+    # new_location.person_id = int(location["person_id"])
+    # new_location.coordinate = location["coordinate"]
+    # new_location.creation_time = location["creation_time"]
+    session.add(location)
     session.commit()

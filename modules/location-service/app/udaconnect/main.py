@@ -21,7 +21,7 @@ logger = logging.getLogger("location-service")
 TOPIC_NAME = 'location_topic'
 KAFKA_SERVER = 'kafka-0.kafka-headless.default.svc.cluster.local:9093'
 
-consumer = KafkaConsumer(bootstrap_servers=KAFKA_SERVER,
+consumer = KafkaConsumer(bootstrap_servers=KAFKA_SERVER, group_id='test-group', auto_commit_interval_ms=2000,
                          value_deserializer=lambda m: json.loads(m.decode('utf-8')))
 
 logger.info("Calling consumer to consume the message")
@@ -30,20 +30,21 @@ consumer.assign([tp])
 lastOffset = consumer.position(tp)
 consumer.seek_to_beginning(tp)
 
-for message in consumer:
-    logger.info(message)
-    if message.offset == 0:
-        continue
-    new_location = Location()
-    data = message.value
-    logger.info(data)
-    new_location.person_id = data["person_id"]
-    new_location.creation_time = data["creation_time"]
-    new_location.coordinate = ST_Point(
-        data["latitude"], data["longitude"])
-    db_ops.save_location_data(new_location)
-    if message.offset == lastOffset - 1:
-        break
+while True:
+    for message in consumer:
+        logger.info(message)
+        if message.offset == 0:
+            continue
+        new_location = Location()
+        data = message.value
+        logger.info(data)
+        new_location.person_id = data["person_id"]
+        new_location.creation_time = data["creation_time"]
+        new_location.coordinate = ST_Point(
+            data["latitude"], data["longitude"])
+        db_ops.save_location_data(new_location)
+        if message.offset == lastOffset - 1:
+            break
 
 
 # TOPIC_NAME = 'location_topic'

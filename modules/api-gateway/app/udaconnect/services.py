@@ -94,30 +94,41 @@ class ConnectionService:
             return connections
         else:
             return {"error": response.status_code}
+
     
 
 class LocationService:
     @staticmethod
     def retrieve(location_id) -> Location:
-        if location_id:
-            response = requests.get(f"{location_service_url}/{location_id}")
-            logger.info(response.json())
-        else:
-            response = requests.get(f"{location_service_url}")
-            logger.info(response.json())
-        if(response.status_code == 200):
-            location_data = response.json()
-            logger.info("Sending response")
-            logger.info(location_data)
-            new_location = Location()
-            new_location.id = location_data['id']
-            new_location.person_id = location_data['person_id']
-            new_location.creation_time = datetime.strptime(location_data['creation_time'], DATE_FORMAT)
-            new_location.set_wkt_with_coords(location_data['latitude'], location_data['longitude'])
-            logger.info(new_location)
-            return new_location
-        else:
-            return {"error": response.status_code}
+        location, coord_text = (
+                db.session.query(Location, Location.coordinate.ST_AsText())
+                .filter(Location.id == location_id)
+                .one()
+            )
+        location.wkt_shape = coord_text
+        return location
+
+    # @staticmethod
+    # def retrieve(location_id) -> Location:
+    #     if location_id:
+    #         response = requests.get(f"{location_service_url}/{location_id}")
+    #         logger.info(response.json())
+    #     else:
+    #         response = requests.get(f"{location_service_url}")
+    #         logger.info(response.json())
+    #     if(response.status_code == 200):
+    #         location_data = response.json()
+    #         logger.info("Sending response")
+    #         logger.info(location_data)
+    #         new_location = Location()
+    #         new_location.id = location_data['id']
+    #         new_location.person_id = location_data['person_id']
+    #         new_location.creation_time = datetime.strptime(location_data['creation_time'], DATE_FORMAT)
+    #         new_location.set_wkt_with_coords(location_data['latitude'], location_data['longitude'])
+    #         logger.info(new_location)
+    #         return new_location
+    #     else:
+    #         return {"error": response.status_code}
 
     @staticmethod
     def create(location: Dict) -> Location:
@@ -133,9 +144,3 @@ class LocationService:
         producer.flush()
         logger.info("Produced a message to topic")
         return location
-        # response = requests.post(f"{location_service_url}", json=location)
-        # logger.info(response.json())
-        # if(response.status_code == 200):
-        #     return location
-        # else:
-        #     return {"error": response.status_code}

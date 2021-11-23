@@ -1,5 +1,5 @@
-def register_routes(api, app, root="location-service"):
-    from app.udaconnect import register_routes as attach_udaconnect
+# def register_routes(api, app, root="location-service"):
+#     from app.udaconnect import register_routes as attach_udaconnect
 
-    # Add routes
-    attach_udaconnect(api, app)
+#     # Add routes
+#     attach_udaconnect(api, app)

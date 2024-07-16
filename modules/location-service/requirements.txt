@@ -27,3 +27,4 @@ flask-restx==0.2.0
 grpcio
 grpcio-tools
 kafka-python
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
